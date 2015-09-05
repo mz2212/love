@@ -1,6 +1,17 @@
 function enemyUpdatePos(dt)
   for i, v in ipairs(enemies) do
     v.y = v.y + (dt * v.speed)
+    if v.goingRight then
+      if v.x > love.graphics.getWidth() - v.sizeX then
+        v.goingRight = false
+      end
+      v.x = v.x + (dt * v.speed)
+    elseif not v.goingRight then
+      if v.x < 0 then
+        v.goingRight = true
+      end
+      v.x = v.x - (dt * v.speed)
+    end
   end
 end
 
@@ -13,10 +24,12 @@ end
 
 function makeEnemy(dt)
   if timer >= 8 then
+    wave = wave + 1
     enemySpeed = enemySpeed + 5
     earl.speed = earl.speed + 5
     for i = 0, 8 do
-      local enemy = { x = i * 150 + 5, y = 10, speed = enemySpeed, sizeX = 40, sizeY = 40 }
+      local xi = math.random(0, width)
+      local enemy = { x = xi, y = 10, speed = enemySpeed + math.random(0, 5), sizeX = 40, sizeY = 40, xOrig = xi, goingRight = true }
       table.insert(enemies, enemy)
     end
     timer = 0

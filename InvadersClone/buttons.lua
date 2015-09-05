@@ -1,10 +1,10 @@
-function registerButton( xi, yi, sizeXi, sizeYi, texti )
+function registerButton( xi, yi, sizeXi, sizeYi, texti, list )
   local button = { x = xi, y = yi, sizeX = sizeXi, sizeY = sizeYi, text = texti }
-  table.insert(buttons, button)
+  table.insert(list, button)
 end
 
-function drawButtons()
-  for i, v in ipairs(buttons) do
+function drawButtons(list)
+  for i, v in ipairs(list) do
       if i == menuSelection then
         love.graphics.setColor(0, 125, 0)
       else

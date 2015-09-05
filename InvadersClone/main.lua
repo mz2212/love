@@ -7,21 +7,26 @@ function love.load(arg)
 	height = love.graphics.getHeight()
 	width = love.graphics.getWidth()
 	-- Game Variables
+	wave = 1
 	earl = { x = width/2, y = height/1.5, speed = 90, sizeX = 30, sizeY = 30, shots = {} }
 	enemySpeed = 10
 	enemies = {}
 	for i = 0, 8 do
-		local enemy = { x = i * 150 + 5, y = 10, speed = 10, sizeX = 40, sizeY = 40 }
+		local enemy = { x = i * 150 + 5, y = 10, speed = 10, sizeX = 40, sizeY = 40, xOrig = i * 150 + 5, goingRight = true }
 		table.insert(enemies, enemy)
 	end
 	timer = 0
 	-- Menu Variables
-	buttons = {}
+	menuButtons = {}
+	lostButtons = {}
 	menuSelection = 1
-	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2, 160, 40, "Play")
-	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 60, 160, 40, "IDK lol")
+	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2, 160, 40, "Play", menuButtons)
+	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 60, 160, 40, "IDK lol", menuButtons)
+	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 90, 160, 40, "Again?", lostButtons)
+	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 150, 160, 40, "Quit!", lostButtons)
 	-- Gamestate (Tracks where we are in the game (menu, playing, paused, etc.))
 	gamestate = "menu"
+	math.randomseed(os.time())
 end
 
 function love.keyreleased(key)
@@ -31,8 +36,8 @@ function love.keyreleased(key)
 	if gamestate == "menu" then
 		if key == "down" then
 			menuSelection = menuSelection + 1
-			if menuSelection > #buttons then
-				menuSelection = #buttons
+			if menuSelection > #menuButtons then
+				menuSelection = #menuButtons
 			end
 		end
 		if key == "up" then
@@ -43,9 +48,31 @@ function love.keyreleased(key)
 		end
 		if key == "return" and menuSelection == 1 then
 			gamestate = "playing"
+			menuSelection = 1
+		end
+	end
+	if gamestate == "lost" then
+		if key == "down" then
+			menuSelection = menuSelection + 1
+			if menuSelection > #lostButtons then
+				menuSelection = #lostButtons
+			end
+		end
+		if key == "up" then
+			menuSelection = menuSelection - 1
+			if menuSelection < 1 then
+				menuSelection = 1
+			end
+		end
+		if key == "return" and menuSelection == 1 then
+			resetGame()
+		end
+		if key == "return" and menuSelection == 2 then
+			love.event.push("quit")
 		end
 	end
 end
+
 
 
 function love.update(dt)
@@ -75,14 +102,16 @@ function love.draw(dt)
 	if gamestate == "playing" then
 		playerDraw()
 		drawEnemy()
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.print("Wave: " .. wave, 3, 10)
 	end
 	if gamestate == "menu" then
-		drawButtons()
+		drawButtons(menuButtons)
 	end
 	if gamestate == "lost" then
 		love.graphics.setColor(255, 255, 255)
 		love.graphics.print("You lose...", width/2, height/2)
-		love.graphics.print("Close window to exit.", width/2, height/2 + 10)
+		drawButtons(lostButtons)
 	end
 	-- Debugging
 end

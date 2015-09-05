@@ -45,3 +45,15 @@ function playerDraw()
     love.graphics.rectangle("fill", v.x, v.y, v.sizeY, v.sizeX)
   end
 end
+
+function resetGame()
+  wave = 1
+  enemySpeed = 10
+  enemies = {}
+  earl = { x = width/2, y = height/1.5, speed = 90, sizeX = 30, sizeY = 30, shots = {} }
+  for i = 0, 8 do
+    local enemy = { x = i * 150 + 5, y = 10, speed = 10, sizeX = 40, sizeY = 40, xOrig = i * 150 + 5, goingRight = true }
+    table.insert(enemies, enemy)
+  end
+  gamestate = "playing"
+end
