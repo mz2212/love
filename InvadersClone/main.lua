@@ -23,7 +23,6 @@ function love.load(arg)
 	titleFont = love.graphics.newFont(36)
 	defaultFont = love.graphics.getFont()
 	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2, 160, 40, "Play", menuButtons)
-	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 60, 160, 40, "IDK lol", menuButtons)
 	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 90, 160, 40, "Again?", lostButtons)
 	registerButton(love.graphics.getWidth() / 2 - 80, love.graphics.getHeight() / 2 + 150, 160, 40, "Quit!", lostButtons)
 	-- Gamestate (Tracks where we are in the game (menu, playing, paused, etc.))
@@ -32,7 +31,7 @@ function love.load(arg)
 end
 
 function love.keyreleased(key)
-	if (key == " ") then
+	if (key == " ") and gamestate == "playing" then
 		shoot()
 	end
 	if gamestate == "menu" then
@@ -52,12 +51,6 @@ function love.keyreleased(key)
 			gamestate = "playing"
 			menuSelection = 1
 		end
-		if key == "return" and menuSelection == 2 then
-			gamestate = "credits"
-		end
-	end
-	if key == "return" and gamestate == "credits" then
-		gamestate = "menu"
 	end
 	if gamestate == "lost" then
 		if key == "down" then
@@ -119,13 +112,9 @@ function love.draw(dt)
 		love.graphics.printf("Just An AWFUL Game!", 0, height/3, width, "center", 0)
 		love.graphics.setFont(defaultFont)
 	end
-	if gamestate == "credits" then
-		love.graphics.printf("Creator: Tidest; with the help of a few tutorials", 0, height/3, width, "center")
-		love.graphics.printf("Made with love in the LÖVE engine", 0, height/3 + 20, width, "center")
-	end
 	if gamestate == "lost" then
 		love.graphics.setColor(255, 255, 255)
-		love.graphics.print("You lose...", width/2, height/2)
+		love.graphics.printf("You lose...", 0, height/2, width, "center")
 		drawButtons(lostButtons)
 	end
 	-- Debugging
