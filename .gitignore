@@ -1,0 +1,8 @@
+# Some ignores for this repo
+# Audio
+# Turns out I don't need to not upload audio...
+# Archives
+*.zip
+*.love
+*.exe
+
